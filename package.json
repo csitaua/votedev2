@@ -1,0 +1,23 @@
+{
+  "name": "votedev",
+  "version": "1.0.0",
+  "description": "CPVR Members Voting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Caribbean Smarties",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^2.2.4",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^2.2.4",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "mysql": "^2.18.1"
+  }
+}

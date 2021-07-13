@@ -1,0 +1,146 @@
+<html>
+
+<head>
+<style>
+td {font-family:verdana;font-size:8pt; color:#444444}
+</style>
+</head>
+
+<body>
+<table align="center" border=1 style="border-collapse: collapse;" cellpadding=6 cellspacing=0 bgcolor="#F2F2F2" bordercolor="#A2A2A2" width="90%">
+<tr bgcolor="#F2F2F2">
+<td colspan=2 align="center"><font color="#000000"><b>PHP Server Side Validator 1.0 (BETA)</b></font></td>
+</tr>
+
+<tr bgcolor="#F2F2F2">
+<td colspan=2 align="center"><a href="help.pdf" style="text-decoration: none; color:#OOOOFF"><b>How to Use?</b></a>
+</td>
+</tr>
+</table>
+
+<br>
+<table align="center" border=1 style="border-collapse: collapse;" cellpadding=6 cellspacing=0 bgcolor="#F2F2F2" bordercolor="#A2A2A2" width="90%">
+<form name="userinfo" action="index.php" enctype="multipart/form-data" method="POST">
+
+<tr bgcolor="#A2A2A2">
+<td colspan=2 align="center"><font color="#FFFFFF"><b>User Registration Form (Demo Example)</b></font></td>
+</tr>
+
+<tr>
+<td>User Name:<font color="#FF0000">*</font></td>
+<td><input type="text" name="uname" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>First Name:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="fname" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Last Name:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="lname" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Gender:<font color="#FF0000">*</font> </td>
+<td><input type="radio" name="gender" value="0"> Male
+<input type="radio" name="gender" value="1">Female</td>
+</tr>
+
+<tr>
+<td>Date of Birth:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="bdate" size="30" value=""> [dd.mm.yy or dd/mm/yy or dd/mm/yyyy]</td>
+</tr>
+
+<tr>
+<td>Age:<font color="#FF0000">*</font> </td>
+<td>
+<input type="checkbox" name="age[]" value="1"> Below 18
+<input type="checkbox" name="age[]" value="2"> Between 18 - 24
+<input type="checkbox" name="age[]" value="3"> Above 24
+(Select Only One Age Range)</td>
+</tr>
+
+<tr>
+<td>Password:<font color="#FF0000">*</font> </td>
+<td><input type="password" name="password" size="30" value="">(Minimum Password Length: 4 characters)</td>
+</tr>
+
+<tr>
+<td>Address:<font color="#FF0000">*</font> </td>
+<td><textarea name="address" cols="25" rows="5"></textarea></td>
+</tr>
+
+<tr>
+<td>Zipcode:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="zip" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Email:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="email" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Phone:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="homephone" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Mobile:<font color="#FF0000">*</font> </td>
+<td><input type="text" name="mob" size="30" value=""></td>
+</tr>
+
+<tr>
+<td>Country:<font color="#FF0000">*</font> (Use Ctrl for multiple selection) </td>
+<td>
+<SELECT name='country[]' multiple="true">
+<OPTION value="A">A</OPTION>
+<OPTION value="B">B</OPTION>
+<OPTION value="C">C</OPTION>
+<OPTION value="D">D</OPTION>
+<OPTION value="E">E</OPTION>
+</SELECT>
+(Select atmost 2 Countries)</td>
+</tr>
+
+<tr>
+<td>Upload Photo:<font color="#FF0000">*</font> </td>
+<td><input type="file" name="image1" value="">(Allowed jpg,gif; size: <= 500b; resolution: 100x100)</td>
+</tr>
+
+<tr>
+<td>Upload File:<font color="#FF0000">*</font> </td>
+<td><input type="file" name="file1" value="">(Allowed txt,xml,csv,zip,tar,ctar,xls; size: <= 1MB)</td>
+</tr>
+
+<tr>
+<td>Upload Resume:<font color="#FF0000">*</font> </td>
+<td><input type="file" name="resume" value="">(Allowed doc,pdf)</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type="submit" name="submit" value="submit"></td>
+</tr>
+
+</form>
+</table>
+
+<br>
+
+<table align="center" border=1 style="border-collapse: collapse;" cellpadding=6 cellspacing=0 bgcolor="#F2F2F2" bordercolor="#A2A2A2"  width="90%">
+<tr bgcolor="#FFFFFF">
+<td align="center">
+<b>
+Developed By:
+Nilesh Gamit
+(nilesh.gamit@gmail.com)
+(nilu_gamit@yahoo.co.in)
+</b>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
