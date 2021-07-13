@@ -1,38 +1,57 @@
-<?php 
+<?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 include 'dbc.php';
 page_protect();
 
 if(!checkVotelevel()){
 	header("Location: index.php");
-	exit();	
+	exit();
 }
-include "../support/connect.php";
+$my = new mysqli($host,$db_username,$db_password,$db_name);
 
 $proxy = 'Manual Vote';
-$p1 = $_REQUEST['point1'];
-$p2 = $_REQUEST['point2'];
-$p3 = $_REQUEST['point3'];
+
+$sql2 = "SELECT * FROM voting_points order by id ASC";
+$rs2 = $my->query($sql2);
+$q_update='';
+while ($vp = $rs2->fetch_assoc()){
+  $tid = $vp['id'];
+  if(isset($_REQUEST['point'.$tid])){
+    $p[$tid] = $_REQUEST['point'.$tid];
+  }
+  else{
+    $p[$tid] = -1;
+  }
+  $q_update = $q_update.', Point'.$tid.' = '.$p[$tid];
+}
+
 $ballot = $_REQUEST['ballot'];
-
-
-if(!$p1){
-	$p1 = -1;;	
-}
-if(!$p2){
-	$p2 = -1;;	
-}
-if(!$p3){
-	$p3 = -1;;	
-}
 
 $tnow = date("Y-m-d H:i:s");
 
+$ipaddress = '';
+if (!empty($_SERVER['HTTP_CLIENT_IP']))
+	$ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+	$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+else if(!empty($_SERVER['HTTP_X_FORWARDED']))
+	$ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+else if(!empty($_SERVER['HTTP_FORWARDED_FOR']))
+	$ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+else if(!empty($_SERVER['HTTP_FORWARDED']))
+	$ipaddress = $_SERVER['HTTP_FORWARDED'];
+else if(!empty($_SERVER['REMOTE_ADDR']))
+	$ipaddress = $_SERVER['REMOTE_ADDR'];
+else
+	$ipaddress = 'UNKNOWN';
+
 
 $sql = "SELECT * FROM vote WHERE ballot = '$ballot'";
-$rs = mysql_query($sql);
-$row = mysql_fetch_array($rs);
-
-if(mysql_num_rows($rs) == 0){
+$rs = $my->query($sql);
+$row = $rs->fetch_assoc();
+echo $my->error.'</br>'.$sql;
+if($rs->num_rows == 0){
 	echo '<script type="text/javascript"> alert("Please check Ballot Number");javascript: history.go(-1);</script>';
 }
 
@@ -40,13 +59,14 @@ if($row['Vote']){
 	echo '<script type="text/javascript"> alert("This ballot number has already voted");javascript: history.go(-1);</script>';
 }
 else{
-	$sql2 = "UPDATE vote SET Vote = 1, Point1 = '$p1', Point2 = '$p2', Point3 = '$p3', Proxy = '$proxy', `ManEntry` = 0, `Time` = '$tnow', `ipaddress`='$ipaddress', `ManEntry`=1 WHERE ballot = '$ballot'";
-	mysql_query($sql2);	
+	$q_update = $my->real_escape_string($q_update);
+	$sql2 = "UPDATE vote SET Vote = 1 ".$q_update.", Proxy = '$proxy', `ManEntry` = 0, `Time` = '$tnow', `ipaddress`='$ipaddress', `ManEntry`=1 WHERE ballot = '$ballot'";
+	$my->query($sql2);
 	$user =  $_SESSION['user_name'];
 	$sql2 = "INSERT INTO manvote (ballot, user) VALUES ('$ballot','$user')";
-	mysql_query($sql2);	
-	header("Location: https://irm.cpvr.com/vote/administrator/index.php");
-    exit;	
+	$my->query($sql2);
+	header("Location: index.php");
+    exit;
 }
 
 ?>
