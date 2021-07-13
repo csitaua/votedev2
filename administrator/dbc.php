@@ -13,31 +13,6 @@ Limitations:
 
 For further usage, please contact me.
 
-/******************** MAIN SETTINGS - PHP LOGIN SCRIPT V2.1 **********************
-Please complete wherever marked xxxxxxxxx
-
-/************* MYSQL DATABASE SETTINGS *****************
-1. Specify Database name in $dbname
-2. MySQL host (localhost or remotehost)
-3. MySQL user name with ALL previleges assigned.
-4. MySQL password
-
-Note: If you use cpanel, the name will be like account_database
-*************************************************************/
-/*
-define ("DB_HOST", "192.168.1.16"); // set database host
-define ("DB_USER", "cpvr_vote_web"); // set database user
-define ("DB_PASS","sVMBHeJMP8ck"); // set database password
-define ("DB_NAME","vote_2016_06"); // set database name
-
-$link = mysql_connect(DB_HOST, DB_USER, DB_PASS) or die("Couldn't make connection.");
-$db = mysql_select_db(DB_NAME, $link) or die("Couldn't select database");
-
-/* Registration Type (Automatic or Manual)
- 1 -> Automatic Registration (Users will receive activation code and they will be automatically approved after clicking activation link)
- 0 -> Manual Approval (Users will not receive activation code and you will need to approve every user manually)
-*/
-$user_registration = 0;  // set 0 or 1
 
 define("COOKIE_TIME_OUT", 10); //specify cookie timeout in days (default is 10 days)
 define('SALT_LENGTH', 9); // salt for password
@@ -50,6 +25,9 @@ define ("VOTEADM_LEVEL", 4);
 define ("RES_LEVEL",3);
 define ("USER_LEVEL", 1);
 define ("GUEST_LEVEL", 0);
+
+define("COOKIE_TIME_OUT", 1); //specify cookie timeout in days (default is 10 days)
+define('SALT_LENGTH', 9); // salt for password
 
 
 /*************** reCAPTCHA KEYS****************/
@@ -65,9 +43,9 @@ Remember this code must be placed on very top of any html or php page.
 
 function page_protect() {
 session_start();
-
+include "../support/db-coop.inc";
 global $db;
-
+$my = new mysqli($host,$db_username,$db_password,$db_name);
 /* Secure against Session Hijacking by checking user agent */
 if (isset($_SESSION['HTTP_USER_AGENT']))
 {
@@ -87,8 +65,11 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 	/* we double check cookie expiry time against stored in database */
 
 	$cookie_user_id  = filter($_COOKIE['user_id']);
-	$rs_ctime = mysql_query("select `ckey`,`ctime` from `users` where `id` ='$cookie_user_id'") or die(mysql_error());
-	list($ckey,$ctime) = mysql_fetch_row($rs_ctime);
+	$rs_ctime = $my->query("select `ckey`,`ctime` from `users` where `id` ='$cookie_user_id'");
+  $row = $rs_ctime->fetch_assoc();
+  $ckey = $row['ckey'];
+  $ctime = $row['ctime'];
+	//list($ckey,$ctime) = mysql_fetch_row($rs_ctime);
 	// coookie expiry
 	if( (time() - $ctime) > 60*60*24*COOKIE_TIME_OUT) {
 
@@ -103,7 +84,10 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 		  $_SESSION['user_id'] = $_COOKIE['user_id'];
 		  $_SESSION['user_name'] = $_COOKIE['user_name'];
 		/* query user level from database instead of storing in cookies */
-		  list($user_level) = mysql_fetch_row(mysql_query("select user_level from users where id='$_SESSION[user_id]'"));
+      $rs = $my->query("select user_level from users where id='$_SESSION[user_id]'");
+      $row = $rs->fetch_assoc();
+      $user_level = $row['user_level'];
+      //list($user_level) = mysql_fetch_row(mysql_query("select user_level from users where id='$_SESSION[user_id]'"));
 
 		  $_SESSION['user_level'] = $user_level;
 		  $_SESSION['HTTP_USER_AGENT'] = md5($_SERVER['HTTP_USER_AGENT']);
@@ -122,10 +106,10 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name']) )
 
 
 function filter($data) {
+  include "../support/db-coop.inc";
 	$data = trim(htmlentities(strip_tags($data)));
-
 	if (get_magic_quotes_gpc())
-		$data = stripslashes($data);
+	$data = stripslashes($data);
   $my = new mysqli($host,$db_username,$db_password,$db_name);
 	$data = $my->real_escape_string($data);
   $my->close();
@@ -242,13 +226,14 @@ function GenKey($length = 7)
 
 function logout()
 {
+include "../support/db-coop.inc";
 global $db;
 session_start();
-
+$my = new mysqli($host,$db_username,$db_password,$db_name);
 if(isset($_SESSION['user_id']) || isset($_COOKIE['user_id'])) {
-mysql_query("update `users`
+$my->query("update `users`
 			set `ckey`= '', `ctime`= ''
-			where `id`='$_SESSION[user_id]' OR  `id` = '$_COOKIE[user_id]'") or die(mysql_error());
+			where `id`='$_SESSION[user_id]' OR  `id` = '$_COOKIE[user_id]'");
 }
 
 /************ Delete the sessions****************/
