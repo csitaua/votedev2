@@ -51,8 +51,8 @@ $pdf->cell(50,5,"Total of voting shares: ");
 $pdf->cell(0,5,$totalvshare,0,1);
 $pdf->cell(50,5,"Total voted: ");
 $pdf->cell(0,5,$totalvsharevoted,0,1);
-$pdf->cell(50,5,"Votes for qourum: ");
-$pdf->cell(0,5,$qourum,0,1);
+//$pdf->cell(50,5,"Votes for qourum: ");
+//$pdf->cell(0,5,$qourum,0,1);
 $pdf->SetFont('times', 'B', 11);
 if($totalvsharevoted < $qourum){
 	//$pdf->cell(0,5,"Total votes are less then needed for qourum",0,1);
@@ -134,54 +134,6 @@ while ($vp = $rs2->fetch_assoc()){
 		$pdf->setXY($pdf->getX(),$ay+5);
 }
 
-/*
-
-$sql = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point2` = 1 AND `Vote`=1";
-$sql2 = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point2` = 2 AND `Vote`=1";
-$sql3 = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point2` = -1 AND `Vote`=1";
-$rs = mysql_query($sql);
-$rs2 = mysql_query($sql2);
-$rs3 = mysql_query($sql3);
-$row = mysql_fetch_array($rs);
-$row2 = mysql_fetch_array($rs2);
-$row3 = mysql_fetch_array($rs3);
-
-$yes1 = 0+$row['tvs'];
-$no1 = 0+$row2['tvs'];
-$notvoted1 = 0+$row3['tvs'];
-
-$pdf->Cell(15,5,'2.',0,0);
-$pdf->Cell(120,5,'Approval of the By-Laws of the Association as amended',0,0);
-$pdf->Cell(15,5,$yes1,0,0);
-$pdf->Cell(15,5,$no1,0,0);
-$pdf->Cell(0,5,$notvoted1,0,1);
-
-$sql = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point3` = 1 AND `Vote`=1";
-$sql2 = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point3` = 2 AND `Vote`=1";
-$sql3 = "SELECT Sum( `VoteShare` ) AS tvs FROM `vote` Where `Point3` = -1 AND `Vote`=1";
-$rs = mysql_query($sql);
-$rs2 = mysql_query($sql2);
-$rs3 = mysql_query($sql3);
-$row = mysql_fetch_array($rs);
-$row2 = mysql_fetch_array($rs2);
-$row3 = mysql_fetch_array($rs3);
-
-$yes1 = 0+$row['tvs'];
-$no1 = 0+$row2['tvs'];
-$notvoted1 = 0+$row3['tvs'];
-
-$pdf->Cell(15,5,'3.',0,0);
-$pdf->Cell(120,5,'Approval for the Board of Directors to both pursue methods of financing',0,0);
-$pdf->Cell(15,5,$yes1,0,0);
-$pdf->Cell(15,5,$no1,0,0);
-$pdf->Cell(0,5,$notvoted1,0,1);
-$pdf->Cell(15,5,'',0,0);
-$pdf->Cell(120,5,'and to engage in Capital Improvement projects for CPVR',0,1);
-$pdf->Cell(15,5,'',0,0);
-$pdf->Cell(120,5,'as stated in 2017 Budget scenario',0,1);
-
-*/
-
 $pdf->ln(25);
 
 $pdf->cell(50,5,"Total of electronic votes:");
@@ -189,7 +141,7 @@ $pdf->cell(0,5,$totalvsharevotede,0,1);
 $pdf->cell(50,5,"Total of manual votes:");
 $pdf->cell(0,5,$totalvsharevotedman,0,1);
 
-
+ob_end_clean();
 $pdf->Output('results.pdf', 'D');
 
 ?>

@@ -97,7 +97,7 @@ if(checkAdmin()){
 
 	}
 
-
+	ob_end_clean();
 	$pdf->Output('confirmation_manual_votes.pdf', 'D');
 }
 

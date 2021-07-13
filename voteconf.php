@@ -118,7 +118,7 @@ while ($vp = $rs2->fetch_assoc()){
 $pdf->SetXY(165,245);
 $pdf->Cell(0,5,'Control: '.$session,0,0,'R');
 
-
+ob_end_clean();
 $pdf->Output('confirmation'.$ballot.'.pdf', 'D');
 
 ?>
