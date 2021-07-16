@@ -90,7 +90,7 @@ $my = new mysqli($host,$db_username,$db_password,$db_name);
 							</td>
 						</tr>
 					';
-				}
+
     			echo '
 					<tr>
     					<td class="w-1/6 p-2">View Results</td>
@@ -122,6 +122,7 @@ $my = new mysqli($host,$db_username,$db_password,$db_name);
 						</td>
 					</tr>
 				';
+			}
 			}
 		?>
  	</table>

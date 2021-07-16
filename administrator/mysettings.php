@@ -1,26 +1,31 @@
-<?php 
+<?php
 /********************** MYSETTINGS.PHP**************************
 This updates user settings and password
 ************************************************************/
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 include 'dbc.php';
+include "../support/db-coop.inc";
+$my = new mysqli($host,$db_username,$db_password,$db_name);
 page_protect();
 
 $err = array();
 $msg = array();
 
-if($_POST['doUpdate'] == 'Update')  
+if($_POST['doUpdate'] == 'Update')
 {
 
 
-$rs_pwd = mysql_query("select pwd from users where id='$_SESSION[user_id]'");
-list($old) = mysql_fetch_row($rs_pwd);
+$rs_pwd = $my->query("select pwd from users where id='$_SESSION[user_id]'");
+$temp = $rs_pwd->fetch_assoc();
+$old = $temp['pwd'];
 $old_salt = substr($old,0,9);
 
 //check for old password in md5 format
 	if($old === PwdHash($_POST['pwd_old'],$old_salt))
 	{
 	$newsha1 = PwdHash($_POST['pwd_new']);
-	mysql_query("update users set pwd='$newsha1' where id='$_SESSION[user_id]'");
+	$my->query("update users set pwd='$newsha1' where id='$_SESSION[user_id]'");
 	$msg[] = "Your new password is updated";
 	//header("Location: mysettings.php?msg=Your new password is updated");
 	} else
@@ -31,7 +36,7 @@ $old_salt = substr($old,0,9);
 
 }
 
-if($_POST['doSave'] == 'Save')  
+if($_POST['doSave'] == 'Save')
 {
 // Filter POST data for harmful code (sanitize)
 foreach($_POST as $key => $value) {
@@ -52,8 +57,8 @@ mysql_query("UPDATE users SET
 //header("Location: mysettings.php?msg=Profile Sucessfully saved");
 $msg[] = "Profile Sucessfully saved";
  }
- 
-$rs_settings = mysql_query("select * from users where id='$_SESSION[user_id]'"); 
+
+$rs_settings = $my->query("select * from users where id='$_SESSION[user_id]'");
 ?>
 <html>
 <head>
@@ -72,13 +77,13 @@ $rs_settings = mysql_query("select * from users where id='$_SESSION[user_id]'");
 
 <body>
 <table width="100%" border="0" cellspacing="0" cellpadding="5" class="main">
-  <tr> 
+  <tr>
     <td colspan="3">&nbsp;</td>
   </tr>
-  <tr> 
-    <td width="160" valign="top"><?php 
+  <tr>
+    <td width="160" valign="top"><?php
 /*********************** MYACCOUNT MENU ****************************
-This code shows my account menu only to logged in users. 
+This code shows my account menu only to logged in users.
 Copy this code till END and place it in a new html or php where
 you want to show myaccount options. This is only visible to logged in users
 *******************************************************************/
@@ -89,10 +94,10 @@ if (isset($_SESSION['user_id'])) {?>
   <a href="mysettings.php">Settings</a><br>
     <a href="logout.php">Logout </a>
   <p>You can add more links here for users</p></div>
-<?php } 
+<?php }
 /*******************************END**************************/
 ?>
-  <?php 
+  <?php
 if (checkAdmin()) {
 /*******************************END**************************/
 ?>
@@ -103,14 +108,14 @@ if (checkAdmin()) {
       <p>&nbsp;</p></td>
     <td width="732" valign="top">
 <h3 class="titlehdr">My Account - Settings</h3>
-      <p> 
-        <?php	
+      <p>
+        <?php
 	if(!empty($err))  {
 	   echo "<div class=\"msg\">";
 	  foreach ($err as $e) {
 	    echo "* Error - $e <br>";
 	    }
-	  echo "</div>";	
+	  echo "</div>";
 	   }
 	   if(!empty($msg))  {
 	    echo "<div class=\"msg\">" . $msg[0] . "</div>";
@@ -118,81 +123,81 @@ if (checkAdmin()) {
 	   }
 	  ?>
       </p>
-      <p>Here you can make changes to your profile. Please note that you will 
+      <p>Here you can make changes to your profile. Please note that you will
         not be able to change your email which has been already registered.</p>
-	  <?php while ($row_settings = mysql_fetch_array($rs_settings)) {?>
+	  <?php while ($row_settings = $rs_settings->fetch_assoc() ) {?>
       <form action="mysettings.php" method="post" name="myform" id="myform">
         <table width="90%" border="0" align="center" cellpadding="3" cellspacing="3" class="forms">
-          <tr> 
-            <td colspan="2"> Your Name / Company Name<br> <input name="name" type="text" id="name"  class="required" value="<? echo $row_settings['full_name']; ?>" size="50"> 
+          <tr>
+            <td colspan="2"> Your Name / Company Name<br> <input name="name" type="text" id="name"  class="required" value="<?php echo $row_settings['full_name']; ?>" size="50">
               <span class="example">Your name or company name</span></td>
           </tr>
-          <tr> 
-            <td colspan="2">Address <span class="example">(full address with ZIP)</span><br> 
-              <textarea name="address" cols="40" rows="4" class="required" id="address"><? echo $row_settings['address']; ?></textarea> 
+          <tr>
+            <td colspan="2">Address <span class="example">(full address with ZIP)</span><br>
+              <textarea name="address" cols="40" rows="4" class="required" id="address"><?php echo $row_settings['address']; ?></textarea>
             </td>
           </tr>
-          <tr> 
+          <tr>
             <td>Country</td>
-            <td><input name="country" type="text" id="country" value="<? echo $row_settings['country']; ?>" ></td>
+            <td><input name="country" type="text" id="country" value="<?php echo $row_settings['country']; ?>" ></td>
           </tr>
-          <tr> 
+          <tr>
             <td width="27%">Phone</td>
-            <td width="73%"><input name="tel" type="text" id="tel" class="required" value="<? echo $row_settings['tel']; ?>"></td>
+            <td width="73%"><input name="tel" type="text" id="tel" class="required" value="<?php echo $row_settings['tel']; ?>"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Fax</td>
-            <td><input name="fax" type="text" id="fax" value="<? echo $row_settings['fax']; ?>"></td>
+            <td><input name="fax" type="text" id="fax" value="<?php echo $row_settings['fax']; ?>"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Website</td>
-            <td><input name="web" type="text" id="web" class="optional defaultInvalid url" value="<? echo $row_settings['website']; ?>"> 
+            <td><input name="web" type="text" id="web" class="optional defaultInvalid url" value="<?php echo $row_settings['website']; ?>">
               <span class="example">Example: http://www.domain.com</span></td>
           </tr>
-          <tr> 
+          <tr>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
-          <tr> 
+          <tr>
             <td>User Name</td>
-            <td><input name="user_name" type="text" id="web2" value="<? echo $row_settings['user_name']; ?>" disabled></td>
+            <td><input name="user_name" type="text" id="web2" value="<?php echo $row_settings['user_name']; ?>" disabled></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Email</td>
-            <td><input name="user_email" type="text" id="web3"  value="<? echo $row_settings['user_email']; ?>" disabled></td>
+            <td><input name="user_email" type="text" id="web3"  value="<?php echo $row_settings['user_email']; ?>" disabled></td>
           </tr>
         </table>
-        <p align="center"> 
+        <p align="center">
           <input name="doSave" type="submit" id="doSave" value="Save">
         </p>
       </form>
 	  <?php } ?>
       <h3 class="titlehdr">Change Password</h3>
-      <p>If you want to change your password, please input your old and new password 
+      <p>If you want to change your password, please input your old and new password
         to make changes.</p>
       <form name="pform" id="pform" method="post" action="">
         <table width="80%" border="0" align="center" cellpadding="3" cellspacing="3" class="forms">
-          <tr> 
+          <tr>
             <td width="31%">Old Password</td>
             <td width="69%"><input name="pwd_old" type="password" class="required password"  id="pwd_old"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>New Password</td>
             <td><input name="pwd_new" type="password" id="pwd_new" class="required password"  ></td>
           </tr>
         </table>
-        <p align="center"> 
+        <p align="center">
           <input name="doUpdate" type="submit" id="doUpdate" value="Update">
         </p>
         <p>&nbsp; </p>
       </form>
       <p>&nbsp; </p>
       <p>&nbsp;</p>
-	   
+
       <p align="right">&nbsp; </p></td>
     <td width="196" valign="top">&nbsp;</td>
   </tr>
-  <tr> 
+  <tr>
     <td colspan="3">&nbsp;</td>
   </tr>
 </table>

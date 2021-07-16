@@ -23,6 +23,29 @@ if($rs->num_rows == 0){
    exit;
 }
 
+if(isset($_POST['download_document'])) {
+		$file = 'docs/2021.pdf';
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename=' . basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file));
+    ob_clean();
+    flush();
+    readfile($file);
+    exit;
+}
+
+if(isset($_POST['exit_button'])){
+	session_unset();
+	session_destroy();
+	header("Location: index.php");
+  exit;
+}
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -105,7 +128,14 @@ if($rs->num_rows == 0){
 
 			copy ("protected/Convocation-2011.pdf", "temp/".$temp.".pdf");*/
 			echo '
-				<tr><td colspan="4" class="text-right md:text-xs lg:text-sm">Current Time '.$now.' -4 GMT'.'</td></tr>
+				<tr>
+					<td class="text-left">
+						<form name="ballot_exit" action="ballot.php" method="post">
+						<input type="submit" value="Exit" name="exit_button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full" />
+						</form>
+					</td>
+					<td colspan="3" class="text-right md:text-xs lg:text-sm">Current Time '.$now.' -4 GMT'.'</td>
+				</tr>
 				<tr><td colspan="4" class="text-right md:text-xs lg:text-sm">Voting Closes '.$voteendstring.' -4 GMT'.'</td></tr>
 				<tr>
 					<td colspan="4" align="left">Welcome '.$row['FirstName'].' '.$row['LastName'].' you have ';
@@ -125,7 +155,10 @@ if($rs->num_rows == 0){
 				 <tr>
     				<td colspan="4" align="left">
 					For documentations download the: <br/>
-					<a class="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"  target="_blank" href="docs/'.$voting_year.'.pdf" >'.$voting_year.' Convocation</a><br/>
+					<form name="convocation_download" action="ballot.php" method="post">
+					<input type="submit" value="'.$voting_year.' Convocation" name="download_document" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full" />
+					</form>
+					<br/>
 
 					</td>
    				 </tr>
@@ -134,7 +167,7 @@ if($rs->num_rows == 0){
 			if($row['Vote'] == 1){
 				echo '
 				 <tr>
-    				<td colspan="4" align="left"><a style="font-size:130%" href="voteconf.php">Voting Confirmation Download</a></td>
+    				<td colspan="4" align="left"><a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full" href="voteconf.php">Voting Confirmation Download</a></td>
    				 </tr>
 			';
 			}
@@ -148,7 +181,7 @@ if($rs->num_rows == 0){
 					<td colspan="4" align="left">
 						<table width="100%">
 							<tr>
-								<td colspan="4" style="font-size:125%" align="center">Online Ballot #'.$ballot.'</td>
+								<td colspan="4" class="text-xl text-center">Online Ballot #'.$ballot.'</td>
 							</tr>
 							<tr>
 								<td colspan="4" align="right">Voting Shares: '.$row['VoteShare'].'
