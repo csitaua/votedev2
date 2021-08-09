@@ -105,7 +105,9 @@ while ($vp = $rs2->fetch_assoc()){
 				$yes1 = 0+$rowt1['tvs'];
 				$no1 = 0+$rowt2['tvs'];
 				$pdf->Cell(15,5,$yes1,0,0,'',1);
-				$pdf->Cell(15,5,$no1,0,1,'',1);
+				//$pdf->Cell(15,5,$no1,0,1,'',1);
+				//Added to remove no at a condidate
+				$pdf->Cell(15,5,'',0,1,'',0);
 			}
 			$ay = $pdf->getY();
 		}

@@ -91,11 +91,12 @@ while ($vp = $rs2->fetch_assoc()){
       $pdf->Cell(120,5,$vpo['answer'],0,0,'',1);
       $t = $vp['id'];
       if($vpo['answer_id']==$row['Point'.$t]){
-        $pdf->Cell(30,5,'*',0,1,'',1);
+        $pdf->Cell(15,5,'*',0,0,'',1);
+				$pdf->Cell(15,5,'',0,1,'',0);
       }
       else{
         $pdf->Cell(15,5,'',0,0,'',1);
-        $pdf->Cell(15,5,'*',0,1,'',1);
+        $pdf->Cell(15,5,'',0,1,'',0);
       }
     }
     $ay = $pdf->getY();
