@@ -24,7 +24,7 @@ if($rs->num_rows == 0){
 }
 
 if(isset($_POST['download_document'])) {
-		$file = 'docs/2021.pdf';
+		$file = 'docs/2022.pdf';
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename=' . basename($file));
